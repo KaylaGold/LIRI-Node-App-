@@ -71,12 +71,7 @@ function myTweets() {
                 let date = tweets[i].created_at;
                 console.log('@LagLiri:' + tweets[i].text + "Created at:" + date.substring(0, 19));
                 console.log('--------------------');
-
-                // Add text to log.txt file
-                fs.appendFile('log.txt', "@LagLiri:" + tweets[i].text + "Created at:" + date.substring(0.19));
-                fs.appendFile('log.txt', "------------");
             }
-
         } else {
             console.log('Error occurred');
 
@@ -87,68 +82,67 @@ function myTweets() {
 // Command #2 display the artist, song name, preview link of the song from Spotify, the album 
 //that the song is from, and if no song is provided then default to "The Sign" by Ace of Base
 function spotifyThisSong(song) {
-    spotify.search({ type: 'track', query: song, limit: 1}, function (err, data) {
-
+    spotify.search({ type: 'track', query: song, limit: 3 }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
-      } else {
-        for (let i = 0; i < data.tracks.items.length; i++);{
-             let spotifySongData = data.tracks.items[i];
-             //Display artist
-         console.log("Artist:" + spotifySongData.artists.name);
-         console.log("Songs name:" + spotifySongData.name);
-         console.log("Preview link of the song is:"+ spotifySongData.preview_url);
-         console.log("Album name is:" + spotifySongData.album.name);
-         console.log("-----------------------");
-         }
-         
-     }
+        } else {
 
-        console.log(data.tracks.items[0]);
+            for (let j = 0; j < data.tracks.items.length; j++) {
+                let spotifySongData = data.tracks.items[j];
+                //Display artist
+                console.log("Artist(s):" + spotifySongData.artists[0].name);
+                //Display song name
+                console.log("Song's name:" + spotifySongData.name);
+                //Display preview link
+                console.log("Preview link of the song:" + spotifySongData.preview_url);
+                //Display album name
+                console.log("Album name:" + spotifySongData.album.name);
+                console.log("-----------------------");
+            }
+
+        }
+
+        //console.log(data.tracks.items[0]);
     });
 
 }
 
 // Command #3 OMDB will display title of movie, year it came out, IMDB rating, Rotten Tomatoes rating,
 //country where movie was produced, language of movie, plot, and actors in the movie
-function  movieThis(movie){
+function movieThis(movie) {
     let queryUrl = "http://www.omdbapi.com/?t=" + movie + "&apikey=" + omdb + "&plot=short&tomatoes=true";
-  
-    request(queryUrl, function(error, response, body){
+
+    request(queryUrl, function (error, response, body) {
         //If request is successful
-        if(!error && response.statusCode === 200) {
-            console.log(body); //remove when done
-            console.log("Title of the movie is:"+ JSON.parse(body).Title);
-            console.log("Year the movie came out is:" + JSON.parse(body).Year);
-            console.log("IMDB Rating of the move is:" + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatoes Rating of the movie is:" + JSON.parse(body).tomatoRating);
-            console.log("Country where the movie was produced is:" + JSON.parse(body).Country);
-            console.log("Language of the movie is:" + JSON.parse(body).Language);
-            console.log("Plot of the movie is:" + JSON.parse(body).Plot);
-            console.log("Actors in the movie are:" + JSON.parse(body).Actors);
-        }else{
+        if (!error && response.statusCode === 200) {
+            //console.log(body); 
+            console.log("Title of the movie:" + JSON.parse(body).Title);
+            console.log("Year the movie came out:" + JSON.parse(body).Year);
+            console.log("IMDB Rating of the move:" + JSON.parse(body).imdbRating);
+            console.log("Rotten Tomatoes Rating of the movie:" + JSON.parse(body).tomatoRating);
+            console.log("Country where the movie was produced:" + JSON.parse(body).Country);
+            console.log("Language of the movie:" + JSON.parse(body).Language);
+            console.log("Plot of the movie:" + JSON.parse(body).Plot);
+            console.log("Actors in the movie:" + JSON.parse(body).Actors);
+        } else {
             console.log('Error occured.');
-        } if(movie === 'Mr. Nobody'){
+        } if (movie === 'Mr. Nobody') {
             console.log("If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
             console.log("It's on Netflix!");
         }
     });
 }
-/*
+
 // Command #4 LIRI will take the text inside of random.txt and use it to call one of LIRI's commands
-function doWhatItSays(){
-    fs.readFile('random.txt', "utf8", function(err, data){
-        if(err){
+function doWhatItSays() {
+    fs.readFile('random.txt', "utf8", function (err, data) {
+        if (err) {
             console.log('Error occurred.');
-        } else{
+        } else {
             let content = data;
-            console.log(data); 
-            
-            spotifyThisSong();
+            console.log(data);
+
+            spotifyThisSong(content);
         }
     })
 };
-
-
-
-*/
